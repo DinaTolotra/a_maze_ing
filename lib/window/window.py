@@ -85,6 +85,13 @@ class Window:
         Window.mlx.mlx_loop_exit(
             Window.mlx_ptr)
 
+    def draw_text(self, text: str, p: Point, color: Color) -> None:
+        self._check_mlx_ptr()
+        self._check_win_ptr()
+        Window.mlx.mlx_string_put(
+            Window.mlx_ptr, self._win_ptr,
+            p.x, p.y, color.to_int(), text)
+
     def draw_image(self, image: Image, pos: Point) -> None:
         Window._check_mlx_ptr()
         self._check_win_ptr()
