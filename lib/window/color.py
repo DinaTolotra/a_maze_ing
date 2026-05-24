@@ -1,17 +1,19 @@
 class Color:
     def __init__(self, r: int, g: int, b: int, a: int) -> None:
+        self._r: int
+        self._g: int
+        self._b: int
+        self._a: int
         self.r = r 
         self.g = g
         self.b = b
         self.a = a
 
-    def to_int(self) -> int:
-        return (
-            self.a << 24 |
-            self.b << 16 |
-            self.g << 8 |
-            self.r
-        )
+    def to_int(self, is_big_indian: bool = False) -> int:
+        if is_big_indian:
+            return int(bytes((self.g, self.b, self.r, self.a)).hex(), 16)
+        else:
+            return int(bytes((self.a, self.r, self.g, self.b)).hex(), 16)
 
     @property
     def r(self) -> int:
@@ -44,3 +46,16 @@ class Color:
     @a.setter
     def a(self, value: int) -> None:
         self._a = max(0, min(255, value))
+
+
+colorscheme: dict[str, dict[str, Color]] = {
+    "gruvbox": {
+        "bg": Color(0x50, 0x49, 0x45, 0xff),
+        "fg": Color(0xeb, 0xdb, 0xb2, 0xff),
+        "red": Color(0xfb, 0x49, 0x34, 0xff),
+        "green": Color(0xb8, 0xbb, 0x26, 0xff),
+        "blue": Color(0x83, 0xa5, 0x98, 0xff),
+        "yellow": Color(0xfa, 0xbd, 0x2f, 0xff),
+        "purple": Color(0xd3, 0x86, 0x9b, 0xff)
+    }
+}

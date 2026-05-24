@@ -3,6 +3,7 @@ from mlx import Mlx
 
 from .color import Color
 from .point import Point
+from .image import Image
 
 
 class Window:
@@ -14,8 +15,9 @@ class Window:
         self._key_handler: Callable[[int, "Window"], None] = None
         self._mouse_handler: Callable[[int, int, int, "Window"], None] = None
 
-    def _check_mlx_ptr(self) -> None:
-        if not Window.mlx_ptr:
+    @classmethod
+    def _check_mlx_ptr(cls) -> None:
+        if not cls.mlx_ptr:
             raise RuntimeError("MLX not initialized")
 
     def _check_win_ptr(self) -> None:
@@ -23,20 +25,27 @@ class Window:
             raise RuntimeError("Window not created")
 
     def create_window(self, size: Point, title: str) -> None:
-        self._check_mlx_ptr()
+        Window._check_mlx_ptr()
         self._win_ptr = Window.mlx.mlx_new_window(
             Window.mlx_ptr, size.x, size.y, title)
         if not self._win_ptr:
             raise RuntimeError("Failed to create window")
 
+    @classmethod
+    def get_screen_size(cls) -> Point:
+        x: int
+        y: int
+        (_, x, y) = cls.mlx.mlx_get_screen_size(cls.mlx_ptr)
+        return Point(x, y)
+
     def clear_window(self) -> None:
-        self._check_mlx_ptr()
+        Window._check_mlx_ptr()
         self._check_win_ptr()
         Window.mlx.mlx_clear_window(
             Window.mlx_ptr, self._win_ptr)
 
     def destroy_window(self) -> None:
-        self._check_mlx_ptr()
+        Window._check_mlx_ptr()
         self._check_win_ptr()
         Window.mlx.mlx_destroy_window(
             Window.mlx_ptr, self._win_ptr)
@@ -55,7 +64,7 @@ class Window:
         self._mouse_handler = mouse_handler
 
     def loop(self) -> None:
-        self._check_mlx_ptr()
+        Window._check_mlx_ptr()
         self._check_win_ptr()
         if self._key_handler:
             Window.mlx.mlx_key_hook(
@@ -71,32 +80,29 @@ class Window:
             Window.mlx_ptr)
 
     def loop_exit(self) -> None:
-        self._check_mlx_ptr()
+        Window._check_mlx_ptr()
         self._check_win_ptr()
         Window.mlx.mlx_loop_exit(
             Window.mlx_ptr)
 
-    def draw_text(self, text: str, p: Point, color: Color) -> None:
-        self._check_mlx_ptr()
+    def draw_image(self, image: Image, pos: Point) -> None:
+        Window._check_mlx_ptr()
         self._check_win_ptr()
-        Window.mlx.mlx_string_put(
+        Window.mlx.mlx_put_image_to_window(
             Window.mlx_ptr, self._win_ptr,
-            p.x, p.y, color.to_int(), text)
-
-    def draw_point(self, p: Point, color: Color) -> None:
-        self._check_mlx_ptr()
-        self._check_win_ptr()
-        Window.mlx.mlx_pixel_put(
-            Window.mlx_ptr, self._win_ptr,
-            p.x, p.y, color.to_int())
+            image.ptr, pos.x, pos.y)
     
-    def draw_rect(self, pos: Point,
-        size: Point, color: Color
-    ) -> None:
-        self._check_mlx_ptr()
-        self._check_win_ptr()
-        for x in range(pos.x, size.x):
-            for y in range(pos.y, size.y):
-                Window.mlx.mlx_pixel_put(
-                    Window.mlx_ptr, self._win_ptr,
-                    x, y, color.to_int())
+    @classmethod
+    def create_image(cls, size: Point) -> Image:
+        cls._check_mlx_ptr()
+        img_ptr: int
+        data: memoryview
+        bpp: int
+        line_len: int
+        is_big_indian: bool
+
+        img_ptr = cls.mlx.mlx_new_image(
+            cls.mlx_ptr, size.x, size.y)
+        (data, bpp, line_len, is_big_indian) = (
+            cls.mlx.mlx_get_data_addr(img_ptr))
+        return Image(img_ptr, data, bpp, line_len, is_big_indian)
