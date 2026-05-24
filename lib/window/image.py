@@ -1,12 +1,11 @@
-from mlx import Mlx
 from .point import Point
 from .color import Color
 
 
 class Image:
     def __init__(self, ptr: int, data: memoryview,
-        bpp: int, line_len: int, is_big_endian: bool
-    ) -> None:
+                 bpp: int, line_len: int, is_big_endian: bool
+                 ) -> None:
         if ptr == 0:
             raise ValueError(
                 "invalid image pointer: " +
@@ -22,8 +21,6 @@ class Image:
         self.bpp = bpp
         self.line_len = line_len
         self.is_big_endian = is_big_endian
-        for bit in self.data:
-            bit = 0
 
     @property
     def ptr(self) -> int:
@@ -73,7 +70,7 @@ class Image:
         index: int = (pos.x * 4 + pos.y * self.line_len)
         self.data[index:index + 4] = memoryview(
             color.to_int(self.is_big_endian).to_bytes(4, 'little'))
-        
+
     def draw_rect(self, size: Point, pos: Point, color: Color) -> None:
         index: int
         for y in range(pos.y, size.y):

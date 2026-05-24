@@ -86,7 +86,7 @@ class Window:
             Window.mlx_ptr)
 
     def draw_text(self, text: str, p: Point, color: Color) -> None:
-        self._check_mlx_ptr()
+        Window._check_mlx_ptr()
         self._check_win_ptr()
         Window.mlx.mlx_string_put(
             Window.mlx_ptr, self._win_ptr,
@@ -98,7 +98,7 @@ class Window:
         Window.mlx.mlx_put_image_to_window(
             Window.mlx_ptr, self._win_ptr,
             image.ptr, pos.x, pos.y)
-    
+
     @classmethod
     def create_image(cls, size: Point) -> Image:
         cls._check_mlx_ptr()
