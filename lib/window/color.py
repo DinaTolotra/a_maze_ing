@@ -1,7 +1,10 @@
 from typing import Self
+from sys import byteorder
 
 
 class Color:
+    is_big_indian: bool = byteorder == "big"
+
     def __init__(self, r: int, g: int, b: int, a: int) -> None:
         self._r: int
         self._g: int
@@ -12,11 +15,39 @@ class Color:
         self.b = b
         self.a = a
 
-    def to_int(self, is_big_indian: bool = False) -> int:
-        if is_big_indian:
-            return int(bytes((self.g, self.b, self.r, self.a)).hex(), 16)
+    @classmethod
+    def from_hex(cls, raw: str) -> Self:
+        raw = raw[1:]
+        if len(raw) == 8:
+            return cls(
+                int(raw[0:2], 16),
+                int(raw[2:4], 16),
+                int(raw[4:6], 16),
+                int(raw[6:8], 16),
+            )
+        elif len(raw) == 6:
+            return cls(
+                int(raw[0:2], 16),
+                int(raw[2:4], 16),
+                int(raw[4:6], 16),
+                0xff,
+            )
+
+    def to_int(self) -> int:
+        if Color.is_big_indian:
+            return int(
+                self.b << 24 |
+                self.g << 16 |
+                self.r << 8 |
+                self.a << 0
+            )
         else:
-            return int(bytes((self.a, self.r, self.g, self.b)).hex(), 16)
+            return int(
+                self.a << 24 |
+                self.g << 16 |
+                self.g << 8 |
+                self.r << 0
+            )
 
     @property
     def r(self) -> int:
@@ -54,13 +85,15 @@ class Color:
     def colorscheme(scheme: str) -> dict[str, Self]:
         colorscheme: dict[str, dict[str, Color]] = {
             "gruvbox": {
-                "bg": Color(0x50, 0x49, 0x45, 0xff),
-                "fg": Color(0xeb, 0xdb, 0xb2, 0xff),
-                "red": Color(0xfb, 0x49, 0x34, 0xff),
-                "green": Color(0xb8, 0xbb, 0x26, 0xff),
-                "blue": Color(0x83, 0xa5, 0x98, 0xff),
-                "yellow": Color(0xfa, 0xbd, 0x2f, 0xff),
-                "purple": Color(0xd3, 0x86, 0x9b, 0xff)
+                "bg": Color.from_hex("#1d2021"),
+                "fg": Color.from_hex("#ebdbb2"),
+                "fg_dim": Color.from_hex("#7c6f64"),
+                "red": Color.from_hex("#cc241d"),
+                "green": Color.from_hex("#98971a"),
+                "blue": Color.from_hex("#458588"),
+                "yellow": Color.from_hex("#d79921"),
+                "gray1": Color.from_hex("#282828"),
+                "gray2": Color.from_hex("#32302f")
             }
         }
         if colorscheme.get(scheme) is not None:

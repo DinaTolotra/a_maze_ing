@@ -69,17 +69,17 @@ class Image:
     def draw_pixel(self, pos: Point, color: Color) -> None:
         index: int = (pos.x * 4 + pos.y * self.line_len)
         self.data[index:index + 4] = memoryview(
-            color.to_int(self.is_big_endian).to_bytes(4, 'little'))
+            color.to_int().to_bytes(4, "little"))
 
     def draw_rect(self, size: Point, pos: Point, color: Color) -> None:
         index: int
         for y in range(pos.y, size.y):
             index = (pos.x * 4 + y * self.line_len)
             self.data[index:index + 4 * size.x] = memoryview(bytes(
-                (color.to_int(self.is_big_endian).to_bytes(4, 'little')) *
+                (color.to_int().to_bytes(4, "little")) *
                 size.x))
 
     def fill(self, color: Color) -> None:
         self.data[:] = memoryview(bytes(
-            (color.to_int(self.is_big_endian).to_bytes(4, 'little')) *
+            (color.to_int().to_bytes(4, "little")) *
             int(len(self.data) / 4)))
