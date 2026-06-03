@@ -1,8 +1,7 @@
 from typing import Callable, Any
 from mlx import Mlx
 
-from .color import Color
-from .point import Point
+from src.utils import Point, Color
 from .image import Image
 
 

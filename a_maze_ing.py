@@ -1,4 +1,7 @@
-from lib.window import Window, Image, Color, Point
+from src.window import Window, Image
+from src.maze import Cell, MazeModel
+from src.utils import Point, Color
+from src.maze import get_view
 
 
 def key_handler(keynum: int, win: Window) -> None:
@@ -32,8 +35,8 @@ def set_window_deco(
     win_deco.draw_rect(Point(size.x - 20, 50), Point(10, 10), scheme["fg"])
     win_deco.draw_rect(Point(size.x - 22, 48), Point(11, 11), scheme["bg"])
     win_deco.draw_rect(
-        Point(size.x - 20, size.y - 40),
-        Point(10, 60), scheme["gray1"])
+        Point(size.x - 20, size.y - 110),
+        Point(10, 70), scheme["gray1"])
     win.draw_image(win_deco, Point(0, 0))
     win.draw_text(
         title,
@@ -51,12 +54,36 @@ def set_window_deco(
     return win_deco
 
 
+def draw_maze(win: Window, maze: MazeModel, size: int, color: Color) -> None:
+    cell_view: dict[Cell, Image]
+    img: Image
+
+    cell_view = get_view(size, 4, color)
+    for x in range(maze.size.x):
+        for y in range(maze.size.y):
+            img = cell_view[maze.get(Point(x, y))]
+            win.draw_image(img, Point(10 + x * size, 70 + y * size))
+
+
+def test_maze(win: Window, color: Color) -> None:
+    maze: MazeModel
+
+    maze = MazeModel(Point(3, 3))
+    maze.set(Point(0, 0), Cell(1, 0, 0, 1))
+    maze.set(Point(1, 0), Cell(1, 1, 1, 0))
+    maze.set(Point(0, 1), Cell(0, 0, 1, 1))
+    maze.set(Point(1, 1), Cell(1, 1, 1, 0))
+    draw_maze(win, maze, 50, color)
+
+
 if __name__ == "__main__":
     win: Window = Window()
     win_size: Point = Point(800, 600)
     scheme: dict[str, Color] = Color.colorscheme("gruvbox")
+
     win.create_window(win_size, "MLX")
     set_window_deco(win, win_size, scheme)
+    test_maze(win, scheme["fg"])
     win.set_key_handler(key_handler)
     win.set_mouse_handler(mouse_handler)
     win.loop()

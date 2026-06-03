@@ -1,5 +1,4 @@
-from .point import Point
-from .color import Color
+from src.utils import Point, Color
 
 
 class Image:
@@ -73,7 +72,7 @@ class Image:
 
     def draw_rect(self, size: Point, pos: Point, color: Color) -> None:
         index: int
-        for y in range(pos.y, size.y):
+        for y in range(pos.y, pos.y + size.y):
             index = (pos.x * 4 + y * self.line_len)
             self.data[index:index + 4 * size.x] = memoryview(bytes(
                 (color.to_int().to_bytes(4, "little")) *
