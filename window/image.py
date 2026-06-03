@@ -1,4 +1,4 @@
-from src.utils import Point, Color
+from utils import Point, Color
 
 
 class Image:

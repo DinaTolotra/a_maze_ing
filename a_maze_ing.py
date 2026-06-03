@@ -1,7 +1,7 @@
-from src.window import Window, Image
-from src.maze import Cell, MazeModel
-from src.utils import Point, Color
-from src.maze import get_view
+from window import Window, Image
+from maze import Cell, MazeModel
+from utils import Point, Color
+from maze import get_view
 
 
 def key_handler(keynum: int, win: Window) -> None:
@@ -51,7 +51,6 @@ def set_window_deco(
             key[1],
             Point(3 * 11 + 10 + 11 * 15 * i, size.y - 30),
             scheme["fg_dim"])
-    return win_deco
 
 
 def draw_maze(win: Window, maze: MazeModel, size: int, color: Color) -> None:
@@ -69,10 +68,10 @@ def test_maze(win: Window, color: Color) -> None:
     maze: MazeModel
 
     maze = MazeModel(Point(3, 3))
-    maze.set(Point(0, 0), Cell(1, 0, 0, 1))
-    maze.set(Point(1, 0), Cell(1, 1, 1, 0))
-    maze.set(Point(0, 1), Cell(0, 0, 1, 1))
-    maze.set(Point(1, 1), Cell(1, 1, 1, 0))
+    maze.set(Point(0, 0), Cell(True, False, False, True))
+    maze.set(Point(1, 0), Cell(True, True, True, False))
+    maze.set(Point(0, 1), Cell(False, False, True, True))
+    maze.set(Point(1, 1), Cell(True, True, True, False))
     draw_maze(win, maze, 50, color)
 
 

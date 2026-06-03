@@ -1,7 +1,7 @@
 from typing import Callable, Any
 from mlx import Mlx
 
-from src.utils import Point, Color
+from utils import Point, Color
 from .image import Image
 
 
@@ -11,8 +11,10 @@ class Window:
 
     def __init__(self) -> None:
         self._win_ptr: int = 0
-        self._key_handler: Callable[[int, "Window"], None] = None
-        self._mouse_handler: Callable[[int, int, int, "Window"], None] = None
+        self._key_handler: Callable[[int, "Window"], None] | None
+        self._mouse_handler: Callable[[int, int, int, "Window"], None] | None
+        self._key_handler = None
+        self._mouse_handler = None
 
     @classmethod
     def _check_mlx_ptr(cls) -> None:

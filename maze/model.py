@@ -1,6 +1,4 @@
-from typing import Self
-
-from src.utils import Point
+from utils import Point
 
 
 class Cell:
@@ -43,7 +41,9 @@ class Cell:
     def w(self, value: bool) -> None:
         self._w = value
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Cell):
+            return NotImplemented
         return (
             self.n == other.n and
             self.e == other.e and

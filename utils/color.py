@@ -1,4 +1,3 @@
-from typing import Self
 from sys import byteorder
 
 
@@ -16,7 +15,7 @@ class Color:
         self.a = a
 
     @classmethod
-    def from_hex(cls, raw: str) -> Self:
+    def from_hex(cls, raw: str) -> "Color":
         raw = raw[1:]
         if len(raw) == 8:
             return cls(
@@ -32,6 +31,8 @@ class Color:
                 int(raw[4:6], 16),
                 0xff,
             )
+        else:
+            raise ValueError("invalid hex value: " + raw)
 
     def to_int(self) -> int:
         if Color.is_big_indian:
@@ -81,19 +82,19 @@ class Color:
     def a(self, value: int) -> None:
         self._a = max(0, min(255, value))
 
-    @staticmethod
-    def colorscheme(scheme: str) -> dict[str, Self]:
+    @classmethod
+    def colorscheme(cls, scheme: str) -> dict[str, "Color"]:
         colorscheme: dict[str, dict[str, Color]] = {
             "gruvbox": {
-                "bg": Color.from_hex("#1d2021"),
-                "fg": Color.from_hex("#ebdbb2"),
-                "fg_dim": Color.from_hex("#7c6f64"),
-                "red": Color.from_hex("#cc241d"),
-                "green": Color.from_hex("#98971a"),
-                "blue": Color.from_hex("#458588"),
-                "yellow": Color.from_hex("#d79921"),
-                "gray1": Color.from_hex("#282828"),
-                "gray2": Color.from_hex("#32302f")
+                "bg": cls.from_hex("#1d2021"),
+                "fg": cls.from_hex("#ebdbb2"),
+                "fg_dim": cls.from_hex("#7c6f64"),
+                "red": cls.from_hex("#cc241d"),
+                "green": cls.from_hex("#98971a"),
+                "blue": cls.from_hex("#458588"),
+                "yellow": cls.from_hex("#d79921"),
+                "gray1": cls.from_hex("#282828"),
+                "gray2": cls.from_hex("#32302f")
             }
         }
         if colorscheme.get(scheme) is not None:

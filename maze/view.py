@@ -1,5 +1,5 @@
-from src.window import Image, Window
-from src.utils import Point, Color
+from window import Image, Window
+from utils import Point, Color
 from .model import Cell
 
 
