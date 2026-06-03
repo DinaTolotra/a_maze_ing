@@ -11,7 +11,7 @@ def key_handler(keynum: int, win: Window) -> None:
 
 
 def mouse_handler(button: int, x: int, y: int, win: Window) -> None:
-    print(f"Key press: [{button}, {x}, {y}]")
+    print(f"Mouse press: [{button}, {x}, {y}]")
 
 
 def set_window_deco(
@@ -42,7 +42,7 @@ def set_window_deco(
         title,
         title_pos,
         scheme["fg"])
-    for key, i in zip(key_map, range(len(key_map))):
+    for i, key in enumerate(key_map):
         win.draw_text(
             f"{key[0]}:",
             Point(10 + 11 * 15 * i, size.y - 30),
