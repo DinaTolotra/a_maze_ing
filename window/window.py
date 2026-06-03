@@ -91,7 +91,7 @@ class Window:
         self._check_win_ptr()
         Window.mlx.mlx_string_put(
             Window.mlx_ptr, self._win_ptr,
-            p.x, p.y, color.to_int(), text)
+            p.x, p.y, int(color), text)
 
     def draw_image(self, image: Image, pos: Point) -> None:
         Window._check_mlx_ptr()
@@ -105,12 +105,11 @@ class Window:
         cls._check_mlx_ptr()
         img_ptr: int
         data: memoryview
-        bpp: int
         line_len: int
-        is_big_indian: bool
+        bpp: int
 
         img_ptr = cls.mlx.mlx_new_image(
             cls.mlx_ptr, size.x, size.y)
-        (data, bpp, line_len, is_big_indian) = (
+        data, bpp, line_len, _ = (
             cls.mlx.mlx_get_data_addr(img_ptr))
-        return Image(img_ptr, data, bpp, line_len, is_big_indian)
+        return Image(img_ptr, data, bpp, line_len)

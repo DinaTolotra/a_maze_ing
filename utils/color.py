@@ -34,7 +34,7 @@ class Color:
         else:
             raise ValueError("invalid hex value: " + raw)
 
-    def to_int(self) -> int:
+    def __int__(self) -> int:
         if Color.is_big_indian:
             return int(
                 self.b << 24 |
@@ -49,6 +49,10 @@ class Color:
                 self.g << 8 |
                 self.r << 0
             )
+
+    def __bytes__(self) -> bytes:
+        return int(self).to_bytes(4, byteorder)
+
 
     @property
     def r(self) -> int:
