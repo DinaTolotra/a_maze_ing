@@ -2,8 +2,6 @@ from sys import byteorder
 
 
 class Color:
-    is_big_indian: bool = byteorder == "big"
-
     def __init__(self, r: int, g: int, b: int, a: int) -> None:
         self._r: int
         self._g: int
@@ -35,7 +33,7 @@ class Color:
             raise ValueError("invalid hex value: " + raw)
 
     def __int__(self) -> int:
-        if Color.is_big_indian:
+        if byteorder == "big":
             return int(
                 self.b << 24 |
                 self.g << 16 |
@@ -45,9 +43,9 @@ class Color:
         else:
             return int(
                 self.a << 24 |
-                self.g << 16 |
+                self.r << 16 |
                 self.g << 8 |
-                self.r << 0
+                self.b << 0
             )
 
     def __bytes__(self) -> bytes:

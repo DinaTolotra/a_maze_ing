@@ -112,4 +112,4 @@ class Window:
             cls.mlx_ptr, size.x, size.y)
         data, bpp, line_len, _ = (
             cls.mlx.mlx_get_data_addr(img_ptr))
-        return Image(img_ptr, data, bpp, line_len)
+        return Image(img_ptr, size, data, bpp, line_len)
