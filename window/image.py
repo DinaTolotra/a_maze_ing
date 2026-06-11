@@ -34,7 +34,7 @@ class Image:
     @property
     def line_len(self) -> int:
         return self._line_len
-    
+
     @property
     def size(self) -> Point:
         return self._size
@@ -89,3 +89,17 @@ class Image:
             dst_index = pos.x * byte_per_pixel + (pos.y + y) * self.line_len
             dst_end = dst_index + min(img.line_len, self.line_len)
             self.data[dst_index:dst_end] = img.data[src_index:src_end]
+
+    def replace_color(self, color: Color, new_color: Color) -> None:
+        byte_per_pixel: int
+        raw_color: memoryview = memoryview(bytes(color))
+        raw_new_color: memoryview = memoryview(bytes(new_color))
+        mx: int = self.size.x
+        my: int = self.size.y
+        index: int
+
+        byte_per_pixel = int(self.bpp / 8)
+        for x, y in [(x, y) for x in range(mx) for y in range(my)]:
+            index = x * byte_per_pixel + y * self.line_len
+            if self._data[index:index + byte_per_pixel] == raw_color:
+                self._data[index:index + byte_per_pixel] = raw_new_color

@@ -101,6 +101,26 @@ class Window:
             image.ptr, pos.x, pos.y)
 
     @classmethod
+    def load_png(cls, path: str) -> Image:
+        cls._check_mlx_ptr()
+        size: Point
+        img_ptr: int
+        data: memoryview
+        line_len: int
+        bpp: int
+
+        size = Point(0, 0)
+        img_ptr, size.x, size.y = (
+            cls.mlx.mlx_png_file_to_image(
+                cls.mlx_ptr, path
+            )
+        )
+        data, bpp, line_len, _ = (
+            cls.mlx.mlx_get_data_addr(img_ptr)
+        )
+        return Image(img_ptr, size, data, bpp, line_len)
+
+    @classmethod
     def create_image(cls, size: Point) -> Image:
         cls._check_mlx_ptr()
         img_ptr: int

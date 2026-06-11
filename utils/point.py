@@ -11,23 +11,29 @@ class Point:
     def y(self) -> int:
         return self._y
 
+    @x.setter
+    def x(self, value: int) -> None:
+        self._x = value
+    
+    @y.setter
+    def y(self, value: int) -> None:
+        self._y = value
+
     def __str__(self) -> str:
         return f"(x={self.x}, y={self.y})"
 
     def __add__(self, other: object) -> "Point":
-        if isinstance(object, Point):
-            return NotImplemented
         if isinstance(other, Point):
             return Point(self.x + other.x, self.y + other.y)
         if (isinstance(other, tuple) and
             all(isinstance(elem, int) for elem in other)):
             return Point(self.x + other[0], self.y + other[1])
+        return NotImplemented
 
     def __sub__(self, other: object) -> "Point":
-        if isinstance(object, Point):
-            return NotImplemented
         if isinstance(other, Point):
             return Point(self.x - other.x, self.y - other.y)
         if (isinstance(other, tuple) and
             all(isinstance(elem, int) for elem in other)):
             return Point(self.x - other[0], self.y - other[1])
+        return NotImplemented
