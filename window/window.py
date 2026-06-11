@@ -13,8 +13,10 @@ class Window:
         self._win_ptr: int = 0
         self._key_handler: Callable[[int, "Window"], None] | None
         self._mouse_handler: Callable[[int, int, int, "Window"], None] | None
+        self._loop_handler: Callable[["Window"], None] | None
         self._key_handler = None
         self._mouse_handler = None
+        self._loop_handler = None
 
     @classmethod
     def _check_mlx_ptr(cls) -> None:
@@ -63,6 +65,12 @@ class Window:
         mouse_handler: Callable[[int, int, int, "Window"], None]
     ) -> None:
         self._mouse_handler = mouse_handler
+    
+    def set_loop_handler(
+        self,
+        loop_handler: Callable[["Window"], None]
+    ) -> None:
+        self._loop_handler = loop_handler
 
     def loop(self) -> None:
         Window._check_mlx_ptr()
@@ -76,6 +84,11 @@ class Window:
             Window.mlx.mlx_mouse_hook(
                 self._win_ptr,
                 self._mouse_handler,
+                self)
+        if self._loop_handler:
+            Window.mlx.mlx_loop_hook(
+                self._win_ptr,
+                self._loop_handler,
                 self)
         Window.mlx.mlx_loop(
             Window.mlx_ptr)

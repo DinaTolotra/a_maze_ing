@@ -2,6 +2,8 @@ from sys import byteorder
 
 
 class Color:
+    colorscheme_list: dict[str, dict[str, "Color"]] = {}
+
     def __init__(self, r: int, g: int, b: int, a: int) -> None:
         self._r: int
         self._g: int
@@ -35,9 +37,9 @@ class Color:
     def __int__(self) -> int:
         if byteorder == "big":
             return int(
-                self.b << 24 |
+                self.r << 24 |
                 self.g << 16 |
-                self.r << 8 |
+                self.b << 8 |
                 self.a << 0
             )
         else:
@@ -85,21 +87,28 @@ class Color:
         self._a = max(0, min(255, value))
 
     @classmethod
+    def load_colorscheme(cls) -> None:
+        colorscheme: dict[str, Color]
+        colorscheme_name_list: list[str] = []
+        color_class: str
+        color_value: str
+
+        with open("res/color/color.txt") as lst_file:
+            for scheme_name in lst_file:
+                colorscheme_name_list.append(scheme_name.strip())
+        for scheme_name in colorscheme_name_list:
+            with open("res/color/" + scheme_name + ".txt") as scheme_file:
+                colorscheme = {}
+                for line in scheme_file:
+                    color_class, color_value = line.split(":")
+                    color_class = color_class.strip()
+                    color_value = color_value.strip()
+                    colorscheme[color_class] = cls.from_hex(color_value)
+                cls.colorscheme_list[scheme_name] = colorscheme
+
+    @classmethod
     def colorscheme(cls, scheme: str) -> dict[str, "Color"]:
-        colorscheme: dict[str, dict[str, Color]] = {
-            "gruvbox": {
-                "bg": cls.from_hex("#1d2021"),
-                "fg": cls.from_hex("#ebdbb2"),
-                "fg_dim": cls.from_hex("#7c6f64"),
-                "red": cls.from_hex("#cc241d"),
-                "green": cls.from_hex("#98971a"),
-                "blue": cls.from_hex("#458588"),
-                "yellow": cls.from_hex("#d79921"),
-                "gray1": cls.from_hex("#282828"),
-                "gray2": cls.from_hex("#32302f")
-            }
-        }
-        if colorscheme.get(scheme) is not None:
-            return colorscheme[scheme]
+        if cls.colorscheme_list.get(scheme) is not None:
+            return cls.colorscheme_list[scheme]
         else:
             raise ValueError("undefined  colorscheme: " + scheme)
